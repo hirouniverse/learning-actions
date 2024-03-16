@@ -2,11 +2,11 @@
 
 name: CI
 
+#run-name: ${{ github.actor }} is learning GitHub Actions
+
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
-  push:
-    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -23,7 +23,24 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Setup Node.js Ver16
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '16'
+
+      - name: Install bats
+        shell: bash
+        run: |
+          npm install -g bats
+
+      - name: Check bats Version
+        shell: bash
+        run: |
+          bats -v
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
