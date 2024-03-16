@@ -1,0 +1,37 @@
+name: Learning GitHub Actions
+
+on:
+  pull_request:
+
+jobs:
+  context:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Dump GitHub Context
+        id: github_context
+        env:
+          GITHUB_CONTEXT: ${{ toJSON(github) }}
+        run: |
+          echo "<<<<< github context object >>>>>"
+          echo "$GITHUB_CONTEXT"
+          echo "result=Hello, World" >> $GITHUB_OUTPUT
+
+      - name: Set Output
+        id: set_output
+        run: |
+          echo "result<<EOF" >> $GITHUB_OUTPUT
+          cat README.md >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Dump Steps Context
+        id: steps-context
+        run: |
+          echo "<<<<< steps context object - github_context >>>>>"
+          echo "${{ toJSON(steps.github_context) }}"
+          echo "<<<<< steps context object - set_output >>>>>"
+          echo "${{ toJSON(steps.set_output) }}"
+          echo "${{ steps.set_output.outputs.result }}"
